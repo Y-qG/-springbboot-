@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="js/jquery-2.0.3.min.js"></script>
+</head>
+<body>
+<div id="container" style="width:400px;height:200px;"></div>
+<div id="container1" style="width:400px;height:200px;float:left;"></div>
+   <script src="js/highcharts.js"></script>
+ <script>
+ 
+ var CpuAndRam="";
+
+       Highcharts.setOptions({
+	global: {
+		useUTC: false
+	}});
+function activeLastPointToolip(chart) {
+	var points = chart.series[0].points;
+	chart.tooltip.refresh(points[points.length -1]);
+}
+var chart = Highcharts.chart('container', {
+	chart: {
+		type: 'spline',
+		marginRight: 10,
+		events: {
+			load: function () {
+				var series = this.series[0],
+					chart = this;
+				activeLastPointToolip(chart);
+				setInterval(function () {
+				$.ajax({
+				    url:"/show",    //请求的url地址
+				    dataType:"json",   //返回格式为json
+				    async:true,//请求是否异步，默认为异步，这也是ajax重要特性
+				    data:{"id":"value"},    //参数值
+				    type:"GET",   //请求方式
+				    beforeSend:function(){
+				        //请求前的处理
+				    },
+				    success:function(req){
+				    	CpuAndRam=req;
+				    },
+				    complete:function(){
+				        //请求完成的处理
+				    },
+				    error:function(){
+				        //请求出错处理
+				    }
+				});
+				<!--alert(CpuAndRam.Ram);-->
+					var x = (new Date()).getTime(), // 当前时间
+						y = Number(CpuAndRam.Cpu);  // 随机值
+					series.addPoint([x, y], true, true);
+					activeLastPointToolip(chart);
+				}, 5000);
+			}
+		}
+	},
+	title: {
+		text: 'Cpu使用率'
+	},
+	xAxis: {
+		type: 'datetime',
+		tickPixelInterval: 150
+	},
+	yAxis: {
+		title: {
+			text: null
+		}
+	},
+	tooltip: {
+		formatter: function () {
+			return '<b>' + this.series.name + '</b><br/>' +
+				Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+				Highcharts.numberFormat(this.y, 2);
+		}
+	},
+	legend: {
+		enabled: false
+	},
+	series: [{
+		name: 'Cpu数据',
+		data: (function () {
+			// 生成随机值
+			var data = [],
+				time = (new Date()).getTime(),
+				i;
+			var k=Number(CpuAndRam.Cpu);
+			for (i = -19; i <= 0; i += 1) {
+				data.push({
+					x: time + i * 5000,
+					y: k
+				});
+			}
+			return data;
+		}())
+	}]
+});
+
+
+
+
+
+
+
+
+
+var chart = Highcharts.chart('container1', {
+	chart: {
+		type: 'spline',
+		marginRight: 10,
+		events: {
+			load: function () {
+				var series = this.series[0],
+					chart = this;
+				activeLastPointToolip(chart);
+				setInterval(function () {
+				$.ajax({
+				    url:"/show",    //请求的url地址
+				    dataType:"json",   //返回格式为json
+				    async:true,//请求是否异步，默认为异步，这也是ajax重要特性
+				    data:{"id":"value"},    //参数值
+				    type:"GET",   //请求方式
+				    beforeSend:function(){
+				        //请求前的处理
+				    },
+				    success:function(req){
+				    	CpuAndRam=req;
+				    },
+				    complete:function(){
+				        //请求完成的处理
+				    },
+				    error:function(){
+				        //请求出错处理
+				    }
+				});
+				<!--alert(CpuAndRam.Ram);-->
+					var x = (new Date()).getTime(), // 当前时间
+						y = Number(CpuAndRam.Ram);  // 随机值
+					series.addPoint([x, y], true, true);
+					activeLastPointToolip(chart);
+				}, 5000);
+			}
+		}
+	},
+	title: {
+		text: '内存使用率'
+	},
+	xAxis: {
+		type: 'datetime',
+		tickPixelInterval: 150
+	},
+	yAxis: {
+		title: {
+			text: null
+		}
+	},
+	tooltip: {
+		formatter: function () {
+			return '<b>' + this.series.name + '</b><br/>' +
+				Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+				Highcharts.numberFormat(this.y, 2);
+		}
+	},
+	legend: {
+		enabled: false
+	},
+	series: [{
+		name: '内存使用率',
+		data: (function () {
+			// 生成随机值
+			var data = [],
+				time = (new Date()).getTime(),
+				i;
+			var k=Number(CpuAndRam.Ram);
+			for (i = -19; i <= 0; i += 1) {
+				data.push({
+					x: time + i * 5000,
+					y: k
+				});
+			}
+			return data;
+		}())
+	}]
+});
+
+
+
+</script>
+</body>
+</html>
